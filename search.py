@@ -34,6 +34,7 @@ def BFS(lab: Labyrinth):
                             desviaciones.append(prov)
                             if k == laby.getEndCell():
                                 prov_f =desviaciones[desviaciones.__len__()-1]
+                                print("BFS found solution that has "+str(prov_f.__len__())+" steps:" )
                                 print(prov_f)
                                 return prov_f.append(k)
                             ja_buscats.append(k)
