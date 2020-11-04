@@ -5,8 +5,32 @@ def DFS(lab: Labyrinth):
     print('Starting DFS')
     trail = []
     ja_cercats = []
+
     start = lab.getStartCell()
 
+
+    def busqueda(ultima_pos):
+        children = ultima_pos.getChildren()
+        trail.append(ultima_pos)
+        a_eliminar = []
+        for a in children:
+            if (ja_cercats.__contains__(a)) or (trail.__contains__(a)):
+                a_eliminar.append(a)
+            elif a == lab.getEndCell():
+                return trail
+        for c in a_eliminar:        #evita que al for de children no revisi la ultima posició si es fa algun remove
+            children.remove(c)
+        if children.__len__() == 0: #no te fills, per tant no te ruta
+            ja_cercats.append(ultima_pos)
+            trail.clear()
+            busqueda(start)
+        else:
+            if not children[0] == lab.getEndCell():
+                busqueda(children[0])
+            else:
+                return trail
+
+    busqueda(start)
     # TODO busqueda en profundidad (elije una rama i va hasta abajo) recursiva
 
     return trail
@@ -34,9 +58,7 @@ def BFS(lab: Labyrinth):
                             desviaciones.append(prov)
                             if k == laby.getEndCell():
                                 prov_f =desviaciones[desviaciones.__len__()-1]
-                                print("BFS found solution that has "+str(prov_f.__len__())+" steps:" )
-                                print(prov_f)
-                                return prov_f.append(k)
+                                return prov_f
                             ja_buscats.append(k)
                     desviaciones.remove(j)
 
