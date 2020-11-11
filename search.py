@@ -1,11 +1,13 @@
 #Ramon Trilla Urteaga
-import sys
+
 
 from labyrinth import Labyrinth
 
 
 def DFS(lab: Labyrinth):
     """Fa una busqueda en profunditat (escull una rama i va fins al final), la solució esta implementada de forma recursiva
+    Precondicions:  Necessita un laberynth d'entrada vàlid (amb posició d'entrada, sortida i almenys un camí vàlid)
+    Postcondicions: Un trail amb un camí vàlid (que va des de l'entrada fins a la sortida)
     """
     print('Starting DFS')
     trail = []
@@ -20,6 +22,8 @@ def DFS(lab: Labyrinth):
             i si no ha passat per alla abans o no es una posició sense sortida escull un. Si detecta que cap
             fill es viable, marca la última posició com a ja_buscda, per a vetar que intenti passar per alla
             de nou
+            Precondicions: Una posició vàlida (format (1,2) per exemple)
+            Postcondicions: Un trail vàlid
         """
         children = ultima_pos.getChildren()     #obtenim els children de la posició d'entrada
         trail.append(ultima_pos)    #afegim la posició d'entrada al trail
@@ -45,15 +49,17 @@ def DFS(lab: Labyrinth):
         # Detecta si el cami es viable (te alguna posició per on seguir) no fills => children.len == 0
         # Si el cami no es viable, afegeix la ultima posició com a punt mort i aixi no tornará a passar pel mateix lloc
         # que portaria a la fucio a arribar al mateix punt mort. Elimiminem el pas actual i l'anterior de trail
-        # i iniciem la busqueda des de la posició anterior a la qu ens ha portat aqui
+        # i iniciem la busqueda des de la posició anterior a la que ens ha portat aqui.
         if children.__len__() == 0:
             ja_cercats.append(ultima_pos)
             trail.remove(ultima_pos)    #eliminem la posició que ens porta a un punt mort del trail.
             trail.pop(trail.__len__()-1)#Degut a com esta implementat la funció, tambe hem de eliminar
-                                        #de trail la posició anterior a la que ensha postat al punt mort
-                                        #ja que sinó podria trobar-se en un bucle infinit
+                                        #de trail la posició anterior a la que ens ha portat al punt mort
+                                        #ja que sinó es trobaria en un bucle infinit.
             busqueda(trail[trail.__len__()-1])
         else:
+            # si el cami es viable (children != 0) buscarem a partir de la posició children[0] ja que sempre
+            # existira aquesta posició
             busqueda(children[0])
 
     busqueda(start) #iniciem la iteració des de la posició start (aixó nomes pasará la primera vegada)
@@ -65,6 +71,9 @@ def DFS(lab: Labyrinth):
 def BFS(lab: Labyrinth):
     """
     Fa una busqueda per nivells de forma iterativa
+    Precondicions: Necessita un laberynth d'entrada vàlid (amb posició d'entrada, sortida i almenys un camí vàlid)
+    Postcondicions: Un trail amb un camí dels més curts possibles (pot trobar 2 camins amb la mateixa longitud que
+    siguin vàlids, en aquest cas retornarà el primer que trobi a la hora de processar-los)
     """
     print('Starting BFS')
 
@@ -77,7 +86,8 @@ def BFS(lab: Labyrinth):
 
     trails = [[lab.getStartCell()]]
     while True:     #Comencem la iteració
-        # En el cas que la longitud de trails sigui 0, implicaria que no hi hauria cap camí possible
+        # En el cas que la longitud de trails sigui 0, implicaria que no hi hauria cap camí possible.
+        # també detectaria un error a la hora de llegir el laberint si no conté una start cell
         if trails.__len__() == 0:
             print("Error al buscar un camí, es possible que no hi hagi solució?")
             break
@@ -91,7 +101,7 @@ def BFS(lab: Labyrinth):
                                             #per tant eliminem el camí de trails
                     trails.remove(j)
                 else:
-                    #per cada children que tingui el camí actual volem crear un camí nou (afegint children[n] al final)
+                    #per cada children que tingui el camí actual volem crear un camí nou (afegint k al final)
                     # Per tant primer filtem per veure si aquest children ja ha estat buscat, sino el conté, copiem el
                     # el trail i li afegim el children k al final i l'afegim a trails. Llavors mirem si aquest children
                     # es la posició final, si ho és retornem el trail (que ja te la posició k inclosa). De no ser aixi
@@ -106,7 +116,7 @@ def BFS(lab: Labyrinth):
                                 return prov_f
                             ja_buscats.append(k)
                     #borrem el trail j degut a que no te cap dels childrens i es inutil guardar-lo ja que els camins
-                    # derivats d'aquest trail j ja han estat afegits a 'aqui'.
+                    # derivats d'aquest trail j ja han estat afegits ('aqui').
                     trails.remove(j)
 
 
